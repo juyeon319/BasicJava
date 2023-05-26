@@ -1,4 +1,4 @@
-package chap10.sec01;
+package sec01;
 
 public class ExceptionEx01 {
 	
