@@ -8,7 +8,15 @@ public class StringBufferEx {
 	
 	public static void main(String[] args) {
 		 StringBuffer sb = new StringBuffer();
-		 StringBuffer sb1 = new StringBuffer("select * from member where mem_id = ? ");
+		 StringBuffer sb1 = new StringBuffer("홍길동");
+		 StringBuffer sb2 = new StringBuffer("홍길동");
+		 
+		 if(sb1.toString().equals(sb2.toString())) {
+			 System.out.println("같은 내용");
+		 } else { 
+			 System.out.println("다른 내용");
+		 }
+		 
 		 sb.append("select * \n ");
 		 sb.append("   from member \n ");
 		 sb.append(" where mem_id = ? ");
