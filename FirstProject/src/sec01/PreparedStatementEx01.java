@@ -50,13 +50,15 @@ public class PreparedStatementEx01 {
 	private int rowCount = 0;
 
 	public static void main(String[] args) {
-		String sql = " INSERT INTO tbl_member VALUES(?, ?, ?, ?, ?) ";
-		int result = new PreparedStatementEx01().insert(sql);
-		if (result != 0) {
-			System.out.println("자료가 성공적으로 저장되었습니다. ");
-		} else {
-			System.out.println("자료가 저장되지 않았습니다. ");
-		}
+//		String sql = " INSERT INTO tbl_member VALUES(?, ?, ?, ?, ?) ";
+		PreparedStatementEx01 ps01=new PreparedStatementEx01();
+//		int result = ps01.insert(sql);
+//		if (result != 0) {
+//			System.out.println("자료가 성공적으로 저장되었습니다. ");
+//		} else {
+//			System.out.println("자료가 저장되지 않았습니다. ");
+//		}
+		ps01.update();
 	}
 
 	public int insert(String sql) {
@@ -103,5 +105,55 @@ public class PreparedStatementEx01 {
 		           if(conn!=null)try{conn.close();}catch(Exception e) {}
 		}
 		return rowCount;
+	}
+	
+	public void update() {
+		String mid ="";
+		String flag = "";
+		String pw = "";
+		String jumin = "";
+		int mileage = 0;
+		String updateSql="UPDATE TBL_MEMBER \n";
+		
+		while (true) {
+			System.out.print("회원 아이디 : ");
+			mid = sc.next();
+			LoginService loginService = LoginService.getInstance();
+			Map<String, Object>map = loginService.isDuplicate(mid);
+			if (map == null) {
+				System.out.println("회원정보가 없습니다");
+			}else {
+				break;
+			}
+		}
+		
+		System.out.print("비밀번호를 변경하겠습니까?(Y/N) : ");
+		flag = sc.next();
+		if(flag.equalsIgnoreCase("y")) {
+			System.out.print("비밀번호 : ");
+			pw = sc.next();
+			updateSql+="       MEM_PASS = '"+pw+"' , \n";
+		} 
+
+		System.out.print("주민번호를 변경하겠습니까?(Y/N) : ");
+		flag = sc.next();			
+		if(flag.equalsIgnoreCase("y")) {
+			System.out.print("주민등록번호 : ");
+			jumin = sc.next();
+			updateSql+="       MEM_JUMIN = '"+jumin+"' , \n";
+		}
+
+		System.out.print("마일리지를 변경하겠습니까?(Y/N) : ");
+		flag = sc.next();
+		if(flag.equalsIgnoreCase("y")) {
+			System.out.print("마일리지 : ");
+			mileage = sc.nextInt();
+			updateSql+="       MEM_MAILEAGE = "+mileage+" , \n";
+		}
+		
+		int len=updateSql.length();
+		updateSql=updateSql.substring(0,len-4);
+		updateSql=updateSql+"\n    WHERE MEM_ID = '"+mid+"'";
+		System.out.println(updateSql);
 	}
 }
