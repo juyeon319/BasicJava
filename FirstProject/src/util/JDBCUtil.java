@@ -22,18 +22,18 @@ public class JDBCUtil {
 		return instance;
 	}
 	
-	private String url = "jdbc:oracle:thin:@localhost:1521:xe";
-	private String user = "temp_project";
-	private String passwd = "java";
+	private String url="jdbc:oracle:thin:@localhost:1521:xe";
+	private String user="temp_project";
+	private String passwd="java";
 	
 	private Connection conn;
-	private PreparedStatement pstmt = null;
-	private Statement stmt = null;
-	private ResultSet rs = null;
+	private PreparedStatement pstmt=null;
+	private Statement stmt=null;
+	private ResultSet rs=null;
 	
-	public List<Map<String, Object>> selectList(String sql) {
+	public List<Map<String, Object>> selectList(String sql){
 		//SELECT * FROM tbl_member
-		List<Map<String, Object>> list = null;
+		List<Map<String, Object>> list=null;
 	    try {
 	    	conn=DriverManager.getConnection(url,user,passwd);
 	    	pstmt=conn.prepareStatement(sql);
@@ -42,12 +42,12 @@ public class JDBCUtil {
 	    	ResultSetMetaData rsmd=rs.getMetaData();
 	    	int columnCount=rsmd.getColumnCount();
 	    	while(rs.next()) {
-	    		if(list==null) list = new ArrayList<>();
-	    		Map<String, Object> row = new HashMap<>();
+	    		if(list==null) list=new ArrayList<>();
+	    		Map<String, Object> row=new HashMap<>();
 	    		for(int i=0; i<columnCount; i++) {
-	    			String key = rsmd.getColumnLabel(i+1);
-	    	//or	String key = rsmd.getColumnName(i);
-	    			Object value = rs.getObject(i+1);
+	    			String key=rsmd.getColumnLabel(i+1);
+	    	//or	String key=rsmd.getColumnName(i);
+	    			Object value=rs.getObject(i+1);
 	    			row.put(key, value);
 	    		}
 	    		list.add(row);
@@ -64,22 +64,22 @@ public class JDBCUtil {
 	
 	public Map<String, Object> selectOne(String sql){
 		//정적쿼리 사용한경우
-		//SQL = "SELECT * FROM TBL_MEMBER WHERE MEM_ID='a001' AND 
-		//      MEM_PASS = '1234'"
+		//sql="SELECT * FROM TBL_MEMBER WHERE MEM_ID='a001' AND 
+		//      MEM_PASS='1234'"
 	    Map<String, Object> row=null;
 	    try {
-	    	conn = DriverManager.getConnection(url,user,passwd);
-	    	pstmt = conn.prepareStatement(sql);
-	    	rs = pstmt.executeQuery();
+	    	conn=DriverManager.getConnection(url,user,passwd);
+	    	pstmt=conn.prepareStatement(sql);
+	    	rs=pstmt.executeQuery();
 	    	//컬럼의 수, 컬럼명
-	    	ResultSetMetaData rsmd = rs.getMetaData();
-	    	int columnCount = rsmd.getColumnCount();
+	    	ResultSetMetaData rsmd=rs.getMetaData();
+	    	int columnCount=rsmd.getColumnCount();
 	    	while(rs.next()) {
 	    		row=new HashMap<>();
 	    		for(int i=0; i<columnCount; i++) {
-	    			String key = rsmd.getColumnLabel(i);
-	    	//or	String key = rsmd.getColumnName(i);
-	    			Object value = rs.getObject(i);
+	    			String key=rsmd.getColumnLabel(i);
+	    	//or	String key=rsmd.getColumnName(i);
+	    			Object value=rs.getObject(i);
 	    			row.put(key, value);
 	    		}
 	    	}
@@ -94,8 +94,8 @@ public class JDBCUtil {
 	}
 	
 	public Map<String, Object> selectOne(String sql, List<Object>param){
-		//SQL = "SELECT * FROM tbl_member WHERE mem_id = ? and
-		//  MEM_PASS = ? " 
+		//sql="SELECT * FROM tbl_member WHERE mem_id = ? and
+		//  mem_pass = ? " 
 		Map<String, Object> row=null;
 		try {
 			conn=DriverManager.getConnection(url,user,passwd);
@@ -107,13 +107,13 @@ public class JDBCUtil {
 			}
 			rs=pstmt.executeQuery();
 			
-			ResultSetMetaData rsmd = rs.getMetaData();
-			int columnCount = rsmd.getColumnCount();
+			ResultSetMetaData rsmd=rs.getMetaData();
+			int columnCount=rsmd.getColumnCount();
 			while(rs.next()) {
 				row=new HashMap<>();
 				for(int i=0; i<columnCount; i++) {
-					String key = rsmd.getColumnLabel(i+1);
-					Object value = rs.getObject(i+1);
+					String key=rsmd.getColumnLabel(i+1);
+					Object value=rs.getObject(i+1);
 					row.put(key, value);
 				}
 			}
@@ -147,4 +147,26 @@ public class JDBCUtil {
 		}
 		return result;
 	}
+	
+	public int update(String sql, List<Object> param) {
+		int result=0;
+		try {
+			conn=DriverManager.getConnection(url,user,passwd);
+			pstmt=conn.prepareStatement(sql);
+			for(int i=0; i<param.size(); i++) {
+				pstmt.setObject(i+1, param.get(i));
+			}
+			
+			result=pstmt.executeUpdate();
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}finally {
+	    	if(rs!=null) try{rs.close();}catch(Exception e) {}
+	    	if(pstmt!=null) try{pstmt.close();}catch(Exception e) {}
+	    	if(conn!=null) try{conn.close();}catch(Exception e) {}    				
+		}
+		return result;
+	}
 }
+
+
